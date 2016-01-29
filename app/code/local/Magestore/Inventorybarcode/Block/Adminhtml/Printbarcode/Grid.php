@@ -113,7 +113,7 @@ class Magestore_Inventorybarcode_Block_Adminhtml_Printbarcode_Grid extends Mage_
                 'getter'    => 'getId',
                 'actions'    => array(
                     array(
-                        'caption'    => Mage::helper('inventorybarcode')->__('View'),
+                        'caption'    => Mage::helper('inventorybarcode')->__('Edit'),
                         'url'        => array('base'=> '*/*/edit'),
                         'field'        => 'id'
                     )),
@@ -123,8 +123,6 @@ class Magestore_Inventorybarcode_Block_Adminhtml_Printbarcode_Grid extends Mage_
                 'is_system'    => true,
         ));
 
-        $this->addExportType('*/*/exportCsv', Mage::helper('inventorybarcode')->__('CSV'));
-        $this->addExportType('*/*/exportXml', Mage::helper('inventorybarcode')->__('XML'));
 
         return parent::_prepareColumns();
     }
