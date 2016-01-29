@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magestore
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the Magestore.com license that is
+ * available through the world-wide-web at this URL:
+ * http://www.magestore.com/license-agreement.html
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category    Magestore
+ * @package     Magestore_Inventory
+ * @copyright   Copyright (c) 2012 Magestore (http://www.magestore.com/)
+ * @license     http://www.magestore.com/license-agreement.html
+ */
+-->
+<config>
+    <inventoryplus_menu>
+        <settings>
+            <children> 
+                <barcode module="inventorybarcode" translate="title">
+                    <title>Barcodes</title>
+                    <sort_order>10</sort_order>
+                    <children> 
+                        <search_barcode module="inventorybarcode" translate="title">
+                            <title>Scan Barcodes</title>
+                            <sort_order>0</sort_order>    
+                            <action>adminhtml/inb_searchbarcode</action>             
+                        </search_barcode>     
+                        <manage_barcode module="inventorybarcode" translate="title">
+                            <title>Manage Barcodes</title>
+                            <sort_order>10</sort_order>    
+                            <action>adminhtml/inb_barcode</action>             
+                        </manage_barcode>
+
+                        <manage_printbarcode module="inventorybarcode" translate="title">
+                            <title>Manage Barcodes Teamplate</title>
+                            <sort_order>13</sort_order>
+                            <action>adminhtml/inb_printbarcode</action>
+                        </manage_printbarcode>
+
+                    </children>             
+                </barcode>  
+            </children>      
+        </settings>      
+    </inventoryplus_menu>
+    <acl>
+        <resources>
+            <all>
+                <title>Allow Everything</title>
+            </all>
+            <admin>
+                <children>
+                    <inventoryplus>  
+                        <children>     
+                            <settings>
+                                <children> 
+                                    <barcode module="inventorybarcode" translate="title">
+                                        <title>Barcodes</title>
+                                        <sort_order>10</sort_order>
+                                        <children> 
+                                            <search_barcode module="inventorybarcode" translate="title">
+                                                <title>Scan Barcodes</title>
+                                                <sort_order>0</sort_order>    
+                                                <action>adminhtml/inb_searchbarcode</action>             
+                                            </search_barcode>     
+                                            <manage_barcode module="inventorybarcode" translate="title">
+                                                <title>Manage Barcodes</title>
+                                                <sort_order>10</sort_order>    
+                                                <action>adminhtml/inb_barcode</action>             
+                                            </manage_barcode>
+
+                                            <manage_printbarcode module="inventorybarcode" translate="title">
+                                                <title>Manage Barcodes Teamplate</title>
+                                                <sort_order>13</sort_order>
+                                                <action>adminhtml/inb_printbarcode</action>
+                                            </manage_printbarcode>
+
+                                        </children>             
+                                    </barcode>  
+                                </children>      
+                            </settings>                                           
+                        </children>                    
+                    </inventoryplus>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

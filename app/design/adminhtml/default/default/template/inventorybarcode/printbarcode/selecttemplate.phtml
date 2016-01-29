@@ -1,0 +1,508 @@
+
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl('js') . 'prototype/prototype.js' ?>"></script>
+
+<style>
+    body {
+        font-family: Segoe UI, Calibri, Arial, Helvetica;
+        font-size: 12px;
+        color: #111;
+        margin: 8px;
+    }
+
+    .footer {
+        text-align: center;
+        margin-top: 40px;
+    }
+
+    form, .header {
+        display: block;
+        margin: auto;
+        width: 60%;
+        min-width: 600px;
+        max-width: 700px;
+        position: relative;
+    }
+
+    input, select {
+        margin: 0;
+    }
+
+    input[type=text], input[type=number], select {
+        border: 1px solid #ababab;
+        padding: 2px;
+    }
+
+    select {
+        padding-top: 1px;
+        padding-bottom: 1px;
+    }
+
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    section {
+        margin-bottom: 24px;
+    }
+
+    h1 {
+        /* display: none;*/
+    }
+
+    h2 {
+        margin: 14px 0 8px 0;
+        font-weight: normal;
+        font-size: 20px;
+    }
+
+    h3 {
+        font-size: 16px;
+        font-weight: normal;
+        font-style: italic;
+        padding-bottom: 4px;
+        border-bottom: 1px solid #c8c8c8;
+        margin: 0 0 14px 0;
+    }
+
+    .logo {
+        margin-top: 8px;
+    }
+
+    nav {
+        float: right;
+        position: absolute;
+        top: 34px;
+        right: 0;
+    }
+
+    nav label {
+        display: block;
+    }
+
+    nav select {
+        margin: 2px 0;
+        margin-left: 0;
+    }
+
+    table {
+        table-layout: fixed;
+        border-collapse: collapse;
+        width: 100%;
+    }
+   /*add by Kai- barcode */ 
+    table #kai td {
+       width: 60px;
+    }
+   /* end add by Kai - barcode*/
+    table td {
+        padding: 3px 25px 1px 4px;
+        vertical-align: top;
+        height: 26px; /* This act as a min-height */
+        /* line-height: 30px; */
+        width: 350px;
+    }
+
+    table tr.odd {
+        background-color: #eee;
+    }
+
+    table tr.even {
+    }
+
+    table .col1 {
+        width: 180px;
+    }
+
+    table .info {
+        position: absolute;
+        dtop: 0;
+        dright: 5px;
+        line-height: 34px;
+    }
+
+    .info img {
+        border: 0;
+        vertical-align: text-bottom;
+    }
+
+    .generate {
+        float: left;
+    }
+
+    .possiblechars {
+        float: right;
+        position: relative;
+    }
+
+    #dpiUnavailable {
+        display: none;
+        padding-left: 8px;
+    }
+
+    div.configurations select {
+        min-width: 70px;
+    }
+
+    div.configurations input[type=number] {
+        width: 70px;
+    }
+
+    /* Moved section by script */
+    #explanation, #dpiExplain, #validCharacters {
+        display: none;
+        max-width: 450px;
+    }
+
+    #explanation ul {
+        list-style: disc;
+        margin-left: 20px;
+    }
+
+    #specificOptions {
+        display: none;
+    }
+
+    #validCharacters input[type=button] {
+        width: 25px;
+        padding: 1px 6px;
+    }
+
+    .BCGcode128 #validCharacters input[type=button],
+    .BCGcode39extended #validCharacters input[type=button],
+    .BCGcode93 #validCharacters input[type=button],
+    .BCGgs1128 #validCharacters input[type=button],
+    .BCGaztec #validCharacters input[type=button],
+    .BCGdatamatrix #validCharacters input[type=button],
+    .BCGmaxicode #validCharacters input[type=button],
+    .BCGqrcode #validCharacters input[type=button],
+    .BCGpdf417 #validCharacters input[type=button] {
+        width: 39px;
+    }
+
+    .bubble {
+        display: none;
+    }
+
+    .bubble.visible {
+        display: block !important;
+        position: absolute;
+        background-color: #f8f8f8;
+        border: 2px solid #ddd;
+        padding: 16px;
+    }
+
+    .gs1128_id {
+        width: 40px;
+        text-align: center;
+    }
+
+    .gs1128_value {
+        width: 295px;
+    }
+
+    .gs1128_delete img {
+        border: 0;
+        margin-left: 5px;
+        vertical-align: text-bottom;
+    }
+
+    #identifierContainer {
+        margin-top: 4px;
+    }
+    @media print {
+        #printbarcode_form{
+            display: none;		
+        }
+        h3{
+            display: none;		
+        }
+        button{
+            display: none;		
+        }
+        .output{
+            display: none;
+        }        
+    }
+</style>
+
+<?php $barcode = Mage::getModel('inventorybarcode/barcode')->load($this->getRequest()->getParam('barcode')); ?>
+<form id="printbarcode_form" action="<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/inb_printbarcode/printBarcode/'); ?>" name="printbarcode_form" method="post">
+    <input type="hidden" name="form_key" value="<?php echo $this->getFormKey() ?>" />
+    <input type="hidden" name="barcodeId" value="<?php echo $this->getRequest()->getParam('barcode') ?>" />
+    <input type="hidden" id="image_width" name="image_width" value="" />
+    <h1><?php echo $this->__('Barcode Generator') ?></h1>
+    <h2><?php echo Mage::helper('inventorybarcode')->__('Barcode:') . ' ' . '<b>'.$barcode->getBarcode().'</b>'; ?></h2>
+    <!--<h3><?php echo Mage::helper('inventorybarcode')->__('Barcode type: ') . ' ' . Mage::helper('inventorybarcode')->getBarcodeName(); ?></h3>-->
+    <div class="configurations">
+        <section class="configurations">
+            <h3>Configurations</h3>
+            <table>
+                <colgroup>
+                    <col class="col1" />
+                    <col class="col2" />
+                </colgroup>
+                <tbody>
+                    
+                    <tr class="odd">
+                        <td><label for="symbology"><?php echo $this->__('Symbology') ?></label></td>
+                        <?php 
+                            $barcodeTypes = Mage::getModel('inventorybarcode/barcodetypes')->toOptionArray();
+                            $defaultBarcodeType = Mage::getStoreConfig('inventoryplus/barcode/barcode_type',Mage::app()->getStore()->getStoreId());
+                        ?>                        
+                        <td><select size="1" id="type" name="type">
+                                <?php foreach($barcodeTypes as $value):?>
+                                <option <?php if($value['value']==$defaultBarcodeType) echo 'selected'?> value="<?php echo $value['value']?>"><?php echo $value['label']?></option>                               
+                                <?php endforeach;?>
+                            </select>
+                        </td>
+                    </tr>
+                   
+                    <tr class="odd" style="display:none">
+                        <td><label for="font_family"><?php echo $this->__('Font') ?></label></td>
+                        <td> <?php echo Mage::getModel('inventorybarcode/printbarcode_function')->getInputTextHtml('font_size', 10, array('type' => 'number', 'min' => 1, 'max' => 30)); ?></td>
+                    </tr>
+                    
+                    <tr class="odd">
+                        <td><label for="font_family"><?php echo $this->__('Barcode Qty') ?></label></td>
+                        <td><input type="text" name="number_of_barcode" id="number_of_barcode" value="1"/></td>
+                    </tr>
+                    
+
+                    <tr class="odd">
+                        <td><label for="font_family"><?php echo $this->__('Select Template') ?></label></td>
+                        <td>
+                            <div style="float:left;">
+                            <?php 
+                                $barcodeTemplates = Mage::getModel('inventorybarcode/barcodetemplate')
+                                                            ->getCollection()
+                                                            ->addFieldToFilter('status',1);
+                            ?>
+                            <select name="barcode_template" id="barcode_template" onchange="showDetaitl(this)">                        
+                                <?php foreach($barcodeTemplates as $barcodeTemplate): ?>
+                                    <option value="<?php echo $barcodeTemplate->getId() ?>"><?php echo $barcodeTemplate->getData('barcode_template_name') ?></option>                            
+                                <?php endforeach ?>
+                            </select>
+                            <?php foreach($barcodeTemplates as $barcodeTemplate): ?>
+                                <div style="display:none" id="template_id_<?php echo $barcodeTemplate->getId() ?>">
+                                    <?php $processor =  Mage::helper('cms')->getBlockTemplateProcessor();?>
+                                    <?php echo $html = $processor->filter($barcodeTemplate->getHtml()); ?>
+                                    <h3><?php echo $this->__('Print paper') ?></h3>
+                                    <?php if( $barcodeTemplate->getId() == 5 ) { ?>
+                                     <img src="<?php echo Mage::getBaseUrl('media').'/inventorybarcode/source/1.png' ?>"/>
+                                    <?php  }else {?>
+                                     <img src="<?php echo Mage::getBaseUrl('media').'/inventorybarcode/source/2.png' ?>"/>
+                                    <?php } ?> 
+                                </div>
+                                <div>
+                                     
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        </td>
+                    </tr>
+
+                    <tr class="odd">
+                        <td><label for="text"></label></td>
+                        <td>
+                            <div class="generate" style="float: left">
+                                <?php echo Mage::getModel('inventorybarcode/printbarcode_function')
+                                        ->getInputTextHtml('text', $barcode->getBarcode(), 
+                                         array('hidden' => 'text', 'required' => 'required')); 
+                                ?> 
+                                <input type="button" onclick="getImage()" value="<?php echo $this->__('Generate') ?>" />
+                            </div>                            
+                        </td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </section>
+    </div>   
+</form>
+
+    <?php   $barcodeTemplate = Mage::getModel('inventorybarcode/barcodetemplate')->getCollection()->getLastItem();?>
+    <input id="templateIdMax" name="templateIdMax" value="<?php echo $barcodeTemplate->getBarcodeTemplateId(); ?>" type="hidden">
+    
+    <div class="output" id="output" style=" display: none;
+        margin: auto;
+        width: 60%;
+        min-width: 600px;
+        max-width: 700px;
+        position: relative;">
+        <section class="output">
+            <h3><?php echo $this->__('Output') ?></h3>
+            <button onclick="printstore()" type="button"><?php echo $this->__('Print') ?></button>
+        </section>
+          <div id="print_content">
+                    <div id="imageOutput" style="float: left">
+                    </div>
+          </div>
+    </div>
+
+<?php $product = Mage::getModel('catalog/product')->load($barcode->getProductEntityId());
+?>
+
+<script type="text/javascript">
+    
+ // edit by Alan - print barcode
+ 
+    function getImage() {
+        $('output').show();      
+        if($('barcode_template').value==4){
+//            $('font_family').value = 0;
+        }else{
+//            $('font_family').value = 'Arial.ttf';
+        }
+        
+        var url = '<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/inb_printbarcode/getimage/'); ?>?' + $('printbarcode_form').serialize();
+    
+        var html = '';
+        var image = '';
+        var border = '';
+//        if ($('border').checked) {
+//            border = 'border: 1px dashed;';
+//        }
+            <?php $barcodeTemplates = Mage::getModel('inventorybarcode/barcodetemplate')->getCollection();?>
+            <?php foreach($barcodeTemplates as $value){  ?>
+
+                if($('barcode_template').value==<?php echo $value->getData('barcode_template_id');?> && $('barcode_template').value != 5){
+                    <?php
+                        $pageheight=$value->getData('page_height');
+                        $perRow=$value->getData('barcode_per_row');
+                        $veltical_distantce=$value->getData('veltical_distantce');
+                        $horizontal_distance=$value->getData('horizontal_distance');
+                        $pageWidth=$value->getData('page_width');
+                        
+                        $top_margin=$value->getData('top_margin');
+                        $left_margin=$value->getData('left_margin');
+                        $right_margin=$value->getData('right_margin');
+                        $bottom_margin=$value->getData('bottom_margin');
+                        if($value->getData('barcode_unit')=='0'){
+                            $unit='mm';
+                        }elseif ($value->getData('barcode_unit')=='1') {
+                            $unit='cm';
+                        }elseif ($value->getData('barcode_unit')=='2') {
+                            $unit='in';
+                        }
+                    ?>
+                    var row='<?php echo $perRow;?>';
+                    row=parseInt(row);
+                    var productname='<?php echo $value->getData('productname_show');?>';
+                    var sku='<?php echo $value->getData('sku_show');?>';
+                    var price='<?php echo $value->getData('price_show');?>';
+                    image +=  '<div style="float:center; ' + border + ';margin:<?php echo $top_margin.$unit;?> <?php echo $right_margin.$unit;?> <?php echo $bottom_margin.$unit;?> <?php echo $left_margin.$unit;?>">';
+                    for (var i = 0; i < $('number_of_barcode').value; i++) {
+
+                        image +='<table style="width:<?php echo $pageWidth.$unit;?>; height:<?php echo $pageheight.$unit;?>; text-align: center;">\n\
+                                                <tr>\n\ ';
+                        for(var j=0;j<row ;j++){
+                            image +='<td style="width:35mm; height:22mm; padding:<?php echo $horizontal_distance.$unit;?> <?php echo $veltical_distantce.$unit;?> "> \n\ ';
+                            if(productname=='1'){
+                                image +='<span style="float: left; font-size: 9px; text-align: center;width:100% "><?php echo $product->getName()?></span>\n\ ';
+                            }
+                            if(sku=='1'){
+                                image +='<span style="float: left; font-size: 9px;text-align: center;width:100% "><?php echo $product->getSku()?></span>\n\ ';
+                            }
+                            if(price=='1'){
+                                image +='<span style="font-size: 12px; float: left; text-align: center;width:100% "><?php echo Mage::helper('core')->currency($product->getPrice())?></span>\n\ ';
+                            }
+                            image +='<img width="140" height="60" name="barcode_images" src="'+url+'" />\n\
+                                           </td>\n\ ';
+                        }
+
+                        image +='</tr>\n\
+                                                </table>';
+                    }
+                    image += '</div>';
+                    $('imageOutput').style.width = '<?php echo $pageWidth.$unit;?>';
+                    
+                }
+                if($('barcode_template').value==<?php echo $value->getData('barcode_template_id');?> && $('barcode_template').value == 5){
+                    <?php
+                        $pageheight=$value->getData('page_height');
+                        $perRow=$value->getData('barcode_per_row');
+                        $veltical_distantce=$value->getData('veltical_distantce');
+                        $horizontal_distance=$value->getData('horizontal_distance');
+                        $pageWidth=$value->getData('page_width');
+                        $top_margin=$value->getData('top_margin');
+                        $left_margin=$value->getData('left_margin');
+                        $right_margin=$value->getData('right_margin');
+                        $bottom_margin=$value->getData('bottom_margin');
+                        if($value->getData('barcode_unit')=='0'){
+                            $unit='mm';
+                        }elseif ($value->getData('barcode_unit')=='1') {
+                            $unit='cm';
+                        }elseif ($value->getData('barcode_unit')=='2') {
+                            $unit='in';
+                        }
+                    ?>
+                    var productname='<?php echo $value->getData('productname_show');?>';
+                    var sku='<?php echo $value->getData('sku_show');?>';
+                    var price='<?php echo $value->getData('price_show');?>';
+                    image +=  '<div style="float:center; ' + border + ';margin:<?php echo $top_margin.$unit;?> <?php echo $right_margin.$unit;?> <?php echo $bottom_margin.$unit;?> <?php echo $left_margin.$unit;?>">';
+                    image += '<div style="width:100%; text-align: center; display:block; overflow: hidden;vertical-align: middle;">\n\ ';
+                    for (var i = 0; i < $('number_of_barcode').value; i++) {
+                            image += '<table style="margin:<?php echo $horizontal_distance.$unit;?> <?php echo $veltical_distantce.$unit;?> 0 <?php echo $veltical_distantce.$unit;?>;"><tr><td style="width:26mm; height:14mm;"><div style="width:80mm; text-align: center; display:block; overflow: hidden;vertical-align: middle;">\n\ ';
+                            if(productname=='1'){
+                                image += '<span style="float: left; font-size: 8px; text-align: left; width: 70%;"><?php echo $product->getName()?></span>\n\ ';
+                            }
+                            if(sku=='1'){
+                                image += '<span style="float: left; font-size: 8px; text-align: left; width: 70%;"><?php echo $product->getSku()?></span>\n\ ';
+                            }
+                            if(price=='1'){
+                                image += '<span style="float: left; font-size: 10px; text-align: left; width: 70%;"><?php echo Mage::helper('core')->currency($product->getPrice())?></span>\n\ ';
+                            }
+                            image += '</div></td><td id="kai" style="width:26mm; height:14mm;"><img width="100" height="40" name="barcode_images" src="'+url+'" /></td></tr></table>';              
+                    }
+                    $('imageOutput').style.width = '<?php echo $pageWidth.$unit;?>';
+                   
+                }
+
+            <?php } ?>
+                
+                 
+                image += '</div>';
+                image += '</div>';
+                
+    
+
+//       var width = 0;
+//       if($('barcode_template').value == '5'){
+//           width = 3.94;
+//       }else{
+//           width = 4.7;
+//       }
+//        
+                            
+       /* End add by Kai 24/11/2015 */
+        
+        $('imageOutput').innerHTML = image;
+ 
+    }
+ // end edit by Alan - print barcode
+    function printstore() {   
+     var width = document.getElementsByName('barcode_images')[0].width;
+        $('image_width').value = width;
+//            window.print();   
+        $('printbarcode_form').submit();
+    }
+    
+    // edit by alan - print barcode
+    
+    function showDetaitl(element) {
+        var templateIdMax = document.getElementById('templateIdMax').value;
+        templateIdMax= parseInt(templateIdMax);
+        for(var i = 1;i<=templateIdMax;i++){
+        
+            if($('template_id_'+i)){
+                $('template_id_'+i).hide();
+            }
+        }
+        $('template_id_'+element.value).show();
+    }
+    $('template_id_1').show();
+    
+    // end add by lan - barcode
+</script>
