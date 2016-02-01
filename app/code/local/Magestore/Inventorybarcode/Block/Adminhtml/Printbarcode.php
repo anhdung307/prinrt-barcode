@@ -37,5 +37,6 @@ class Magestore_Inventorybarcode_Block_Adminhtml_Printbarcode extends Mage_Admin
         parent::__construct();       
     }
     /* 123 */
+	/* 456 */
     
 }
