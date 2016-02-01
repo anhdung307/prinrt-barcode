@@ -36,6 +36,6 @@ class Magestore_Inventorybarcode_Block_Adminhtml_Printbarcode extends Mage_Admin
         $this->_addButtonLabel = Mage::helper('inventorybarcode')->__('Create Template');
         parent::__construct();       
     }
-    
+    /* 123 */
     
 }
