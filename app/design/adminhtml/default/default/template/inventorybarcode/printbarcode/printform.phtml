@@ -23,10 +23,6 @@
         .button-print{
             display:none !important;
         }
-        .button-printpdf{
-            display:none !important;
-        }
-
 }
 
 </style>
@@ -92,7 +88,7 @@ parse_str(urldecode($data), $purchaseorderProducts);
             <?php $barcode = Mage::getModel('inventorybarcode/barcode')->load($barcodeId);?>
             <?php for($i = 0; $i<$qty; $i++){?>
                 
-                <?php if($dataTemplate && $template!=5 ){?>
+                <?php if($dataTemplate && $dataTemplate['barcode_type']==0 ){?>
                     <?php $product = Mage::getModel('catalog/product')->load($barcode->getProductEntityId());?>
                 <table style="width:<?php echo $dataTemplate['page_width'].$dataTemplate['barcode_unit'];?>; height:<?php echo $dataTemplate['page_height'].$dataTemplate['barcode_unit'];?>; text-align: center; ">
                         <tr>
@@ -101,15 +97,15 @@ parse_str(urldecode($data), $purchaseorderProducts);
                                     
                                     
                                         <?php if($dataTemplate['productname_show']=='1'){?>
-                                            <span style=" width:100%;float: left; font-size: 9px; text-align: center; "><?php echo $product->getName()?></span>
+                                            <span style=" width:100%;float: left; font-size: <?php echo $dataTemplate['font_size'].$dataTemplate['barcode_unit'];?>; text-align: center; "><?php echo $product->getName()?></span>
                                         <?php }?>
                                         <?php if($dataTemplate['sku_show']=='1'){?>
-                                            <span style=" width:100%;float: left; font-size: 9px; text-align: center; "><?php echo $product->getSku() ?></span>
+                                            <span style=" width:100%;float: left; font-size: <?php echo $dataTemplate['font_size'].$dataTemplate['barcode_unit'];?>; text-align: center; "><?php echo $product->getSku() ?></span>
                                         <?php }?>
                                         <?php if($dataTemplate['price_show']=='1'){?>
-                                            <span style=" width:100%;float: left; font-size: 12px; text-align: center;"><?php echo Mage::helper('core')->currency($product->getPrice())?></span>
+                                            <span style=" width:100%;float: left; font-size: <?php echo $dataTemplate['font_size'].$dataTemplate['barcode_unit'];?>; text-align: center;"><?php echo Mage::helper('core')->currency($product->getPrice())?></span>
                                         <?php }?>
-                                        <img width="140" height="60" name="barcode_images" src="<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/inb_printbarcode/getimage/',array('type' => $type, 'text' => $barcode->getBarcode(), 'customize' => $customize, 'heigth_barcode' => $heightImage, 'font_size' => 10)); ?>" />
+                                        <img style="width:<?php echo $dataTemplate['barcode_width'].$dataTemplate['barcode_unit'];?>;height:<?php echo $dataTemplate['barcode_height'].$dataTemplate['barcode_unit'];?>" name="barcode_images" src="<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/inb_printbarcode/getimage/',array('type' => $type, 'text' => $barcode->getBarcode(), 'customize' => $customize, 'heigth_barcode' => $heightImage, 'font_size' => 10)); ?>" />
                                     
 
                                 </td>
@@ -120,24 +116,24 @@ parse_str(urldecode($data), $purchaseorderProducts);
                 </table>
             <?php }?>
                
-                <?php if($dataTemplate && $template==5){?>
+                <?php if($dataTemplate && $dataTemplate['barcode_type']==1){?>
                         <div style="display: inline-block; float:left; margin-left:35px; ">
                             <table style=" width:<?php echo $dataTemplate['page_width'].$dataTemplate['barcode_unit'];?>; height:<?php echo $dataTemplate['page_height'].$dataTemplate['barcode_unit'];?>; line-height:0.4; margin:<?php echo $dataTemplate['horizontal_distance'].$dataTemplate['barcode_unit'];?> <?php echo $dataTemplate['veltical_distantce'].$dataTemplate['barcode_unit'];?> " >
                                 <tr>
                                     <td align="center" style="width:26mm; height:14mm;">
                                         <?php $product = Mage::getModel('catalog/product')->load($barcode->getProductEntityId());?>
                                         <?php if($dataTemplate['productname_show']=='1'){?>
-                                            <span style="float: left; font-size: 8px; text-align: left; margin-left:10px;margin-top:2px;  "><?php echo show($product->getName())?></span></br>
+                                            <span style="float: left; font-size: <?php echo $dataTemplate['font_size'].$dataTemplate['barcode_unit'];?>; text-align: left; margin-left:10px;margin-top:2px;  "><?php echo show($product->getName())?></span></br>
                                         <?php }?>
                                         <?php if($dataTemplate['sku_show']=='1'){?>
-                                            <span style="float: left; font-size: 8px; text-align: left; margin-left:10px;margin-top:2px;"><?php echo show($product->getSku())?></span></br>
+                                            <span style="float: left; font-size:<?php echo $dataTemplate['font_size'].$dataTemplate['barcode_unit'];?>; text-align: left; margin-left:10px;margin-top:2px;"><?php echo show($product->getSku())?></span></br>
                                         <?php }?>
                                         <?php if($dataTemplate['price_show']=='1'){?>
-                                            <span style="float: left; font-size:10px; text-align: left; margin-left:10px;margin-top:4px; "><?php echo Mage::helper('core')->currency($product->getPrice())?></span>
+                                            <span style="float: left; font-size:<?php echo $dataTemplate['font_size'].$dataTemplate['barcode_unit'];?>; text-align: left; margin-left:10px;margin-top:4px; "><?php echo Mage::helper('core')->currency($product->getPrice())?></span>
                                         <?php }?>
                                     </td>
                                     <td align="center" style="width:22mm; height:14mm;">
-                                       <img style=" margin-top: 15px;" width="100" height="40" name="barcode_images" src="<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/inb_printbarcode/getimage/',array('type' => $type, 'text' => $barcode->getBarcode(), 'customize' => $customize, 'heigth_barcode' => $heightImage, 'font_size' => 10)); ?>" />
+                                       <img style=" margin-top: 15px; width:<?php echo $dataTemplate['barcode_width'].$dataTemplate['barcode_unit'];?>;height:<?php echo $dataTemplate['barcode_height'].$dataTemplate['barcode_unit'];?>;"  name="barcode_images" src="<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/inb_printbarcode/getimage/',array('type' => $type, 'text' => $barcode->getBarcode(), 'customize' => $customize, 'heigth_barcode' => $heightImage, 'font_size' => 10)); ?>" />
                                     </td>
                                     <td></td>
                                 </tr>
@@ -164,7 +160,7 @@ parse_str(urldecode($data), $purchaseorderProducts);
                                    
             ?>
 
-                <?php if($dataTemplate && $template!=5):?>
+                <?php if($dataTemplate && $dataTemplate['barcode_type']==0):?>
                     <?php $product = Mage::getModel('catalog/product')->load($barcode->getProductEntityId());?>
                 <table style="width:<?php echo $dataTemplate['page_width'].$dataTemplate['barcode_unit'];?>; height:<?php echo $dataTemplate['page_height'].$dataTemplate['barcode_unit'];?>; text-align: center; ">
                        <tr>
@@ -176,17 +172,17 @@ parse_str(urldecode($data), $purchaseorderProducts);
                         <td align ="center" style="width:35mm; height:22mm; padding:<?php echo $dataTemplate['horizontal_distance'].$dataTemplate['barcode_unit'];?> <?php echo $dataTemplate['veltical_distantce'].$dataTemplate['barcode_unit'];?>">
                   
                             <?php if($dataTemplate['productname_show']=='1') {?>
-                                <span style="float: left; font-size: 9px; text-align: center; width: 100%"><?php echo $product->getName()?></span>
+                                <span style="float: left; font-size: <?php echo $dataTemplate['font_size'].$dataTemplate['barcode_unit'];?>; text-align: center; width: 100%"><?php echo $product->getName()?></span>
                             <?php }?>
                                 
                             <?php if($dataTemplate['sku_show']=='1') {?>
-                                <span style="float: left; font-size: 9px; text-align: center; width: 100%"><?php echo $product->getSku() ?></span>
+                                <span style="float: left; font-size: <?php echo $dataTemplate['font_size'].$dataTemplate['barcode_unit'];?>; text-align: center; width: 100%"><?php echo $product->getSku() ?></span>
                             <?php }?>
                                 
                             <?php if($dataTemplate['price_show']=='1') {?>
-                                <span style="float: left; font-size: 12px; text-align: center; width: 100%"><?php echo Mage::helper('core')->currency($product->getPrice())?></span>
+                                <span style="float: left; font-size: <?php echo $dataTemplate['font_size'].$dataTemplate['barcode_unit'];?>; text-align: center; width: 100%"><?php echo Mage::helper('core')->currency($product->getPrice())?></span>
                             <?php }?>
-                                <img width="140" height="60" name="barcode_images" src="<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/inb_printbarcode/getimage/',array('type' => $type, 'text' => $barcode->getBarcode(), 'customize' => $customize, 'heigth_barcode' => $heightImage, 'font_size' => 10)); ?>" /></td>
+                                <img style="width:<?php echo $dataTemplate['barcode_width'].$dataTemplate['barcode_unit'];?>;height:<?php echo $dataTemplate['barcode_height'].$dataTemplate['barcode_unit'];?>" name="barcode_images" src="<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/inb_printbarcode/getimage/',array('type' => $type, 'text' => $barcode->getBarcode(), 'customize' => $customize, 'heigth_barcode' => $heightImage, 'font_size' => 10)); ?>" /></td>
                                     <?php endfor; ?>
                                     <?php if ($qtyfor % $dataTemplate['barcode_per_row'] != 0) { ?>
                                         <?php 
@@ -201,7 +197,7 @@ parse_str(urldecode($data), $purchaseorderProducts);
                        </table>
                 <?php endif;?>
 
-                <?php if($dataTemplate && $template==5):?>
+                <?php if($dataTemplate && $dataTemplate['barcode_type']==1):?>
                         <div style="display: inline-block; float:left; margin-left:35px; ">
                             <table style=" width:<?php echo $dataTemplate['page_width'].$dataTemplate['barcode_unit'];?>; height:<?php echo $dataTemplate['page_height'].$dataTemplate['barcode_unit'];?>; line-height:0.4; margin:<?php echo $dataTemplate['horizontal_distance'].$dataTemplate['barcode_unit'];?> <?php echo $dataTemplate['veltical_distantce'].$dataTemplate['barcode_unit'];?> " >
                                 <tr>
@@ -211,17 +207,17 @@ parse_str(urldecode($data), $purchaseorderProducts);
                                         <td align="center" style="width:26mm; height:14mm;">
                                             <?php $product = Mage::getModel('catalog/product')->load($barcode->getProductEntityId());?>
                                             <?php if($dataTemplate['productname_show']=='1') {?>
-                                                <span style="float: left; font-size: 8px; text-align: left; margin-left:10px;margin-top:2px;  "><?php echo show($product->getName())?></span></br>
+                                                <span style="float: left; font-size: <?php echo $dataTemplate['font_size'].$dataTemplate['barcode_unit'];?>; text-align: left; margin-left:10px;margin-top:2px;  "><?php echo show($product->getName())?></span></br>
                                             <?php }?>
                                             <?php if($dataTemplate['sku_show']=='1') {?>
-                                                <span style="float: left; font-size: 8px; text-align: left; margin-left:10px;margin-top:2px;"><?php echo show($product->getSku())?></span></br>
+                                                <span style="float: left; font-size: <?php echo $dataTemplate['font_size'].$dataTemplate['barcode_unit'];?>; text-align: left; margin-left:10px;margin-top:2px;"><?php echo show($product->getSku())?></span></br>
                                             <?php }?>
                                             <?php if($dataTemplate['price_show']=='1') {?>
-                                                <span style="float: left; font-size:10px; text-align: left; margin-left:10px;margin-top:4px; "><?php echo Mage::helper('core')->currency($product->getPrice())?></span>
+                                                <span style="float: left; font-size:<?php echo $dataTemplate['font_size'].$dataTemplate['barcode_unit'];?>; text-align: left; margin-left:10px;margin-top:4px; "><?php echo Mage::helper('core')->currency($product->getPrice())?></span>
                                             <?php }?>
                                         </td>
                                         <td align="center" style="width:22mm; height:14mm;">
-                                           <img style=" margin-top: 15px;" width="100" height="40" name="barcode_images" src="<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/inb_printbarcode/getimage/',array('type' => $type, 'text' => $barcode->getBarcode(), 'customize' => $customize, 'heigth_barcode' => $heightImage, 'font_size' => 10)); ?>" />
+                                           <img style=" margin-top: 15px;width:<?php echo $dataTemplate['barcode_width'].$dataTemplate['barcode_unit'];?>;height:<?php echo $dataTemplate['barcode_height'].$dataTemplate['barcode_unit'];?>;" name="barcode_images" src="<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/inb_printbarcode/getimage/',array('type' => $type, 'text' => $barcode->getBarcode(), 'customize' => $customize, 'heigth_barcode' => $heightImage, 'font_size' => 10)); ?>" />
                                         </td>
                                         <td></td>
                                     <?php endfor; ?>    

@@ -305,11 +305,14 @@ class Magestore_Inventorybarcode_Helper_Data extends Mage_Core_Helper_Data {
             $data['productname_show'] = $barcodeTemplates->getData('productname_show');
             $data['sku_show'] = $barcodeTemplates->getData('sku_show');
             $data['price_show'] = $barcodeTemplates->getData('price_show');
-            
             $data['top_margin'] = $barcodeTemplates->getData('top_margin');
             $data['left_margin'] = $barcodeTemplates->getData('left_margin');
             $data['right_margin'] = $barcodeTemplates->getData('right_margin');
             $data['bottom_margin'] = $barcodeTemplates->getData('bottom_margin');
+            $data['barcode_type'] = $barcodeTemplates->getData('barcode_type');
+            $data['barcode_width'] = $barcodeTemplates->getData('barcode_width');
+            $data['barcode_height'] = $barcodeTemplates->getData('barcode_height');
+            $data['font_size'] = $barcodeTemplates->getData('font_size');
             if ($barcodeTemplates->getData('barcode_unit') == '0') {
                 $data['barcode_unit'] = 'mm';
             } elseif ($barcodeTemplates->getData('barcode_unit') == '1') {

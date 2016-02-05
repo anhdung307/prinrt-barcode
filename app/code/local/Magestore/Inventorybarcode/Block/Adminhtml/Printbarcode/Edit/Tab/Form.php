@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Magestore
  * 
@@ -31,11 +32,11 @@ class Magestore_Inventorybarcode_Block_Adminhtml_Printbarcode_Edit_Tab_Form exte
     protected function _prepareLayout() {
         if (count(Mage::helper('inventorypurchasing/purchaseorder')->getWarehouseOption()) > 0) {
             $this->setChild('continue_button', $this->getLayout()->createBlock('adminhtml/widget_button')
-                    ->setData(array(
-                        'label' => Mage::helper('inventorypurchasing')->__('Continue'),
-                        'onclick' => "setSettings('" . $this->getContinueUrl() . "','continue_button')",
-                        'class' => 'save'
-                    ))
+                            ->setData(array(
+                                'label' => Mage::helper('inventorypurchasing')->__('Continue'),
+                                'onclick' => "setSettings('" . $this->getContinueUrl() . "','continue_button')",
+                                'class' => 'save'
+                            ))
             );
         }
         return parent::_prepareLayout();
@@ -51,21 +52,21 @@ class Magestore_Inventorybarcode_Block_Adminhtml_Printbarcode_Edit_Tab_Form exte
         $this->setForm($form);
         $fieldset = $form->addFieldset('barcodeTemplate_edit', array('legend' => Mage::helper('inventorybarcode')->__('Template information')));
 
-        $data='';
+        $data = '';
         if (Mage::getSingleton('adminhtml/session')->getBarcodeTemplateData()) {
             $data = Mage::getSingleton('adminhtml/session')->getBarcodeTemplateData();
             Mage::getSingleton('adminhtml/session')->setBarcodeTemplateData(null);
         } elseif (Mage::registry('barcodeTemplate_data')) {
             $data = Mage::registry('barcodeTemplate_data')->getData();
-            $data['attribute_show']=array();
-            if($data['productname_show']==1){
-                array_push($data['attribute_show'],'Product Name');
+            $data['attribute_show'] = array();
+            if ($data['productname_show'] == 1) {
+                array_push($data['attribute_show'], 'Product Name');
             }
-            if($data['sku_show']==1){
-                array_push($data['attribute_show'],'Sku');
+            if ($data['sku_show'] == 1) {
+                array_push($data['attribute_show'], 'Sku');
             }
-            if($data['price_show']==1){
-                array_push($data['attribute_show'],'Price');
+            if ($data['price_show'] == 1) {
+                array_push($data['attribute_show'], 'Price');
             }
         }
 
@@ -76,32 +77,78 @@ class Magestore_Inventorybarcode_Block_Adminhtml_Printbarcode_Edit_Tab_Form exte
             'name' => 'barcode_template_name',
         ));
 
-        $fieldset->addField('barcode_per_row', 'text', array(
-            'label' => Mage::helper('inventorybarcode')->__('Labels per row'),
-            'class' => 'required-entry',
-            'required' => true,
-            'name' => 'barcode_per_row',
-        ));
-
         $fieldset->addField('barcode_unit', 'select', array(
             'label' => Mage::helper('inventorybarcode')->__('Unit'),
             'class' => 'required-entry',
             'name' => 'barcode_unit',
             'values' => Mage::getSingleton('inventorybarcode/barcodeUnit')->getOptionHash(),
         ));
-        
+
+        $fieldset->addField('barcode_type', 'select', array(
+            'label' => Mage::helper('inventorybarcode')->__('Barcode Type'),
+            'class' => 'required-entry',
+            'name' => 'barcode_type',
+            'values' => Mage::getSingleton('inventorybarcode/barcodetypetemplate')->getOptionHash(),
+            'onchange' => 'checkSelectedItem()',
+            'after_element_html' => '<script type="text/javascript">
+                
+                function checkSelectedItem(){ 
+                    var barcode_type = $("barcode_type").value;
+                    if(barcode_type==1){
+                        $("barcode_per_row").value=1;
+                        $("barcode_per_row").disabled = true;
+                    }else{
+                        $("barcode_per_row").disabled = false;
+                    }
+                    return false;
+                }
+               
+            </script>'
+        ));
+
+        $fieldset->addField('barcode_per_row', 'text', array(
+            'label' => Mage::helper('inventorybarcode')->__('Labels per row'),
+            'class' => 'required-entry',
+            'required' => true,
+            'name' => 'barcode_per_row',
+            'after_element_html' => '<script type="text/javascript">
+                var barcode_type = $("barcode_type").value;
+                if(barcode_type==1){
+                    $("barcode_per_row").disabled = true;
+                }
+            </script>'
+        ));
+
         $fieldset->addField('page_width', 'text', array(
             'label' => Mage::helper('inventorybarcode')->__('Paper Width'),
             'class' => 'required-entry',
             'required' => true,
             'name' => 'page_width',
         ));
-        
+
         $fieldset->addField('page_height', 'text', array(
             'label' => Mage::helper('inventorybarcode')->__('Paper height'),
             'class' => 'required-entry',
             'required' => true,
             'name' => 'page_height',
+        ));
+        $fieldset->addField('barcode_width', 'text', array(
+            'label' => Mage::helper('inventorybarcode')->__('Barcode width'),
+            'class' => 'required-entry',
+            'required' => true,
+            'name' => 'barcode_width',
+        ));
+        $fieldset->addField('barcode_height', 'text', array(
+            'label' => Mage::helper('inventorybarcode')->__('Barcode height'),
+            'class' => 'required-entry',
+            'required' => true,
+            'name' => 'barcode_height',
+        ));
+        $fieldset->addField('font_size', 'text', array(
+            'label' => Mage::helper('inventorybarcode')->__('Font size'),
+            'class' => 'required-entry',
+            'required' => true,
+            'name' => 'font_size',
         ));
         $fieldset->addField('top_margin', 'text', array(
             'label' => Mage::helper('inventorybarcode')->__('Top margin'),
@@ -127,16 +174,16 @@ class Magestore_Inventorybarcode_Block_Adminhtml_Printbarcode_Edit_Tab_Form exte
             'required' => true,
             'name' => 'bottom_margin',
         ));
-        
-        
-        
+
+
+
         $fieldset->addField('horizontal_distance', 'text', array(
             'label' => Mage::helper('inventorybarcode')->__('Space between rows'),
             'class' => 'required-entry',
             'required' => true,
             'name' => 'horizontal_distance',
         ));
-        
+
         $fieldset->addField('veltical_distantce', 'text', array(
             'label' => Mage::helper('inventorybarcode')->__('Space between columns'),
             'class' => 'required-entry',
@@ -147,7 +194,7 @@ class Magestore_Inventorybarcode_Block_Adminhtml_Printbarcode_Edit_Tab_Form exte
         $fieldset->addField('attribute_show', 'multiselect', array(
             'label' => Mage::helper('inventorybarcode')->__('Show attributes'),
             'name' => 'attribute_show',
-            'values' => array(array('value' => 'Product Name', 'label' => 'Product Name'), array('value' => 'Sku', 'label' => 'Sku'),array('value' => 'Price', 'label' => 'Price'),array('value' => 'null', 'label' => '')),
+            'values' => array(array('value' => 'Product Name', 'label' => 'Product Name'), array('value' => 'Sku', 'label' => 'Sku'), array('value' => 'Price', 'label' => 'Price'), array('value' => 'null', 'label' => '')),
         ));
 
 
@@ -155,7 +202,7 @@ class Magestore_Inventorybarcode_Block_Adminhtml_Printbarcode_Edit_Tab_Form exte
 
         $fieldset->addField('continue_button', 'note', array(
             'text' => $this->getChildHtml('continue_button'),
-            'after_element_html'=>'<script type="text/javascript">
+            'after_element_html' => '<script type="text/javascript">
                 function setSettings(urlTemplate, setElement) {
                     var barcode_template_name=$("barcode_template_name").value;
                     var barcode_per_row=$("barcode_per_row").value;
@@ -164,12 +211,16 @@ class Magestore_Inventorybarcode_Block_Adminhtml_Printbarcode_Edit_Tab_Form exte
                     var veltical_distantce=$("veltical_distantce").value;
                     var horizontal_distance=$("horizontal_distance").value;
                     var pageWidth=$("page_width").value;
+                    var barcode_type=$("barcode_type").value;
+                    var barcode_width=$("barcode_width").value;
+                    var barcode_height=$("barcode_height").value;
+                    var font_size=$("font_size").value;
                     
                     var top_margin=$("top_margin").value;
                     var left_margin=$("left_margin").value;
                     var right_margin=$("right_margin").value;
                     var bottom_margin=$("bottom_margin").value;
-                    var select1 = document.getElementById("attribute_show");
+                    var select1 = $("attribute_show");
                         var wSelected = "";
                         var j = 0;
                         for (var i = 0; i < select1.length; i++) {
@@ -182,48 +233,59 @@ class Magestore_Inventorybarcode_Block_Adminhtml_Printbarcode_Edit_Tab_Form exte
                     var attribute_show = wSelected;
 
                     if(!barcode_template_name){
-							alert("Please import template name to continue!");
-                            return false;
+			alert("Please import template name to continue!");
+                        return false;
                     }
                     if(!barcode_per_row){
-							alert("Please import number per row to continue!");
-                            return false;
+			alert("Please import Labels per row to continue!");
+                        return false;
                     }
                     if(!pageWidth){
-							alert("Please import Page width to continue!");
-                            return false;
+			alert("Please import Page width to continue!");
+                        return false;
                     }
                     if(!page_height){
-							alert("Please import Heigth to continue!");
-                            return false;
+			alert("Please import Page Heigth to continue!");
+                        return false;
                     }
                     
                     if(!top_margin){
-							alert("Please import top margin to continue!");
-                            return false;
+			alert("Please import top margin to continue!");
+                        return false;
                     }
                     if(!left_margin){
-							alert("Please import left margin to continue!");
-                            return false;
+			alert("Please import left margin to continue!");
+                        return false;
                     }
                     if(!right_margin){
-							alert("Please import right margin to continue!");
-                            return false;
+			alert("Please import right margin to continue!");
+                        return false;
                     }
                     if(!bottom_margin){
-							alert("Please import bottom margin to continue!");
-                            return false;
+			alert("Please import bottom margin to continue!");
+                        return false;
                     }
                     if(!veltical_distantce){
-							alert("Please import Veltical Distantce to continue!");
-                            return false;
+			alert("Please import Veltical Distantce to continue!");
+                        return false;
                     }
                     if(!horizontal_distance){
-							alert("Please import Horizontal Distance to continue!");
-                            return false;
+			alert("Please import Horizontal Distance to continue!");
+                        return false;
                     }
-
-                    setLocation(urlTemplate+"attribute_show/"+attribute_show+"/barcode_template_name/"+barcode_template_name+"/barcode_per_row/"+barcode_per_row+"/page_height/"+page_height+"/veltical_distantce/"+veltical_distantce+"/horizontal_distance/"+horizontal_distance+"/barcode_unit/"+barcode_unit+"/top_margin/"+top_margin+"/left_margin/"+left_margin+"/right_margin/"+right_margin+"/bottom_margin/"+bottom_margin+"/pageWidth/"+pageWidth);
+                    if(!barcode_width){
+			alert("Please import barcode width to continue!");
+                        return false;
+                    }
+                    if(!barcode_height){
+			alert("Please import barcode height to continue!");
+                        return false;
+                    }
+                    if(!horizontal_distance){
+			alert("Please import font size to continue!");
+                        return false;
+                    }
+                    setLocation(urlTemplate+"attribute_show/"+attribute_show+"/barcode_template_name/"+barcode_template_name+"/barcode_per_row/"+barcode_per_row+"/page_height/"+page_height+"/veltical_distantce/"+veltical_distantce+"/horizontal_distance/"+horizontal_distance+"/barcode_unit/"+barcode_unit+"/top_margin/"+top_margin+"/left_margin/"+left_margin+"/right_margin/"+right_margin+"/bottom_margin/"+bottom_margin+"/pageWidth/"+pageWidth+"/barcode_type/"+barcode_type+"/barcode_width/"+barcode_width+"/barcode_height/"+barcode_height+"/font_size/"+font_size);
                 }
             </script>'
         ));
@@ -233,7 +295,8 @@ class Magestore_Inventorybarcode_Block_Adminhtml_Printbarcode_Edit_Tab_Form exte
 
     public function getContinueUrl() {
         return $this->getUrl('*/*/saveTemplate', array(
-            '_current' => true,
+                    '_current' => true,
         ));
     }
+
 }

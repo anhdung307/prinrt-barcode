@@ -79,6 +79,19 @@ class Magestore_Inventorybarcode_Block_Adminhtml_Printbarcode_Grid extends Mage_
             'renderer'=>'Magestore_Inventorybarcode_Block_Adminhtml_Printbarcode_Renderer_ShowAttribtule',
         ));
         
+        
+        $this->addColumn('barcode_type', array(
+            'header'    => Mage::helper('inventorybarcode')->__('Barcore Type'),
+            'align'     => 'left',
+            'width'     => '150px',
+            'index'     => 'barcode_type',
+            'type'        => 'options',
+            'options'     => array(
+                1 => 'Barcode for jewelry',
+                0 => 'Barcode',
+            ),
+        ));
+        
         $this->addColumn('page_width', array(
             'header'    => Mage::helper('inventorybarcode')->__('Page Width'),
             'align'     =>'left',

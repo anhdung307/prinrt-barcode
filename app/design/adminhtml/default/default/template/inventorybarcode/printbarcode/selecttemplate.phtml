@@ -289,7 +289,7 @@
                                     <?php $processor =  Mage::helper('cms')->getBlockTemplateProcessor();?>
                                     <?php echo $html = $processor->filter($barcodeTemplate->getHtml()); ?>
                                     <h3><?php echo $this->__('Print paper') ?></h3>
-                                    <?php if( $barcodeTemplate->getId() == 5 ) { ?>
+                                    <?php if( $barcodeTemplate->getBarcodeType() == 1 ) { ?>
                                      <img src="<?php echo Mage::getBaseUrl('media').'/inventorybarcode/source/1.png' ?>"/>
                                     <?php  }else {?>
                                      <img src="<?php echo Mage::getBaseUrl('media').'/inventorybarcode/source/2.png' ?>"/>
@@ -311,7 +311,7 @@
                                         ->getInputTextHtml('text', $barcode->getBarcode(), 
                                          array('hidden' => 'text', 'required' => 'required')); 
                                 ?> 
-                                <input type="button" onclick="getImage()" value="<?php echo $this->__('Generate') ?>" />
+                                <button onclick="printstore()" type="button"><?php echo $this->__('Print') ?></button>
                             </div>                            
                         </td>
                     </tr>
@@ -361,9 +361,6 @@
         var html = '';
         var image = '';
         var border = '';
-//        if ($('border').checked) {
-//            border = 'border: 1px dashed;';
-//        }
             <?php $barcodeTemplates = Mage::getModel('inventorybarcode/barcodetemplate')->getCollection();?>
             <?php foreach($barcodeTemplates as $value){  ?>
 
@@ -465,27 +462,12 @@
                  
                 image += '</div>';
                 image += '</div>';
-                
-    
-
-//       var width = 0;
-//       if($('barcode_template').value == '5'){
-//           width = 3.94;
-//       }else{
-//           width = 4.7;
-//       }
-//        
-                            
-       /* End add by Kai 24/11/2015 */
         
-        $('imageOutput').innerHTML = image;
+//        $('imageOutput').innerHTML = image;
  
     }
- // end edit by Alan - print barcode
-    function printstore() {   
-     var width = document.getElementsByName('barcode_images')[0].width;
-        $('image_width').value = width;
-//            window.print();   
+    // end edit by Alan - print barcode
+    function printstore() {    
         $('printbarcode_form').submit();
     }
     

@@ -27,7 +27,7 @@
  * @package     Magestore_Inventorybarcode
  * @author      Magestore Developer
  */
-class Magestore_Inventorybarcode_Adminhtml_Inb_PrintbarcodeController extends Mage_Adminhtml_Controller_Action {
+class Magestore_Inventorybarcode_Adminhtml_Inb_PrintbarcodeController extends Magestore_Inventoryplus_Controller_Action {
 
     /**
      * select template to print barcode
@@ -37,8 +37,17 @@ class Magestore_Inventorybarcode_Adminhtml_Inb_PrintbarcodeController extends Ma
     
     /* Edit by alan - print barcode*/
     
-    public function indexAction() {
+    protected function _initAction() {
         $this->loadLayout()
+                ->_setActiveMenu('inventoryplus/settings/barcode/manage_printbarcode');
+        return $this;
+    }
+
+    /**
+     * index action
+     */
+    public function indexAction() {
+        $this->_initAction()
                 ->renderLayout();
     }
 
@@ -95,11 +104,14 @@ class Magestore_Inventorybarcode_Adminhtml_Inb_PrintbarcodeController extends Ma
         $left_margin = $this->getRequest()->getParam('left_margin');
         $right_margin = $this->getRequest()->getParam('right_margin');
         $bottom_margin = $this->getRequest()->getParam('bottom_margin');
+        $barcode_type = $this->getRequest()->getParam('barcode_type');
+        $barcode_width = $this->getRequest()->getParam('barcode_width');
+        $barcode_height = $this->getRequest()->getParam('barcode_height');
+        $font_size = $this->getRequest()->getParam('font_size');
         
         $model = Mage::getModel('inventorybarcode/barcodetemplate');
         $attributeShow = explode(',', $attribute_show);
         $barcodePerRow = (int) $barcode_per_row;
-
         $productname_show = 0;
         $sku_show = 0;
         $price_show = 0;
@@ -149,17 +161,33 @@ class Magestore_Inventorybarcode_Adminhtml_Inb_PrintbarcodeController extends Ma
                         </div>';
         
 
-
-        if ($id && $id!=5) {
-            $model->setBarcodeTemplateName($template_name)->setHtml($template)->setProductnameShow($productname_show)->setSkuShow($sku_show)->setPriceShow($price_show)
-                    ->setBarcodePerRow($barcode_per_row)->setPageHeight($page_height)->setBarcodeUnit($barcode_unit)->setVelticalDistantce($veltical_distantce)->setHorizontalDistance($horizontal_distance)->setPageWidth($pageWidth)->setTopMargin($top_margin)->setLeftMargin($left_margin)->setRightMargin($right_margin)->setBottomMargin($bottom_margin)->setBarcodeTemplateId($id)->save();
-        } elseif ($id && $id==5) {
-            $model->setBarcodeTemplateName($template_name)->setHtml($template5)->setProductnameShow($productname_show)->setSkuShow($sku_show)->setPriceShow($price_show)
-                    ->setBarcodePerRow($barcode_per_row)->setPageHeight($page_height)->setBarcodeUnit($barcode_unit)->setVelticalDistantce($veltical_distantce)->setHorizontalDistance($horizontal_distance)->setPageWidth($pageWidth)->setTopMargin($top_margin)->setLeftMargin($left_margin)->setRightMargin($right_margin)->setBottomMargin($bottom_margin)->setBarcodeTemplateId($id)->save();
-        }elseif(!$id){
-            $model->setBarcodeTemplateName($template_name)->setHtml($template)->setProductnameShow($productname_show)->setSkuShow($sku_show)->setPriceShow($price_show)
-                    ->setBarcodePerRow($barcode_per_row)->setPageHeight($page_height)->setBarcodeUnit($barcode_unit)->setVelticalDistantce($veltical_distantce)->setHorizontalDistance($horizontal_distance)->setPageWidth($pageWidth)->setTopMargin($top_margin)->setLeftMargin($left_margin)->setRightMargin($right_margin)->setBottomMargin($bottom_margin)->save();
+        
+        if($id){
+            if($barcode_type==0){
+                $model->setBarcodeTemplateName($template_name)->setHtml($template)->setProductnameShow($productname_show)->setSkuShow($sku_show)->setPriceShow($price_show)
+                    ->setBarcodePerRow($barcode_per_row)->setPageHeight($page_height)->setBarcodeUnit($barcode_unit)->setVelticalDistantce($veltical_distantce)->setHorizontalDistance($horizontal_distance)
+                    ->setPageWidth($pageWidth)->setTopMargin($top_margin)->setLeftMargin($left_margin)->setRightMargin($right_margin)->setBottomMargin($bottom_margin)->setBarcodeType($barcode_type)
+                    ->setBarcodeWidth($barcode_width)->setBarcodeHeight($barcode_height)->setFontSize($font_size)->setBarcodeTemplateId($id)->save();
+            }  else {
+                $model->setBarcodeTemplateName($template_name)->setHtml($template5)->setProductnameShow($productname_show)->setSkuShow($sku_show)->setPriceShow($price_show)
+                    ->setBarcodePerRow($barcode_per_row)->setPageHeight($page_height)->setBarcodeUnit($barcode_unit)->setVelticalDistantce($veltical_distantce)->setHorizontalDistance($horizontal_distance)
+                    ->setPageWidth($pageWidth)->setTopMargin($top_margin)->setLeftMargin($left_margin)->setRightMargin($right_margin)->setBottomMargin($bottom_margin)->setBarcodeType($barcode_type)
+                    ->setBarcodeWidth($barcode_width)->setBarcodeHeight($barcode_height)->setFontSize($font_size)->setBarcodeTemplateId($id)->save();
+            }  
+        }  elseif (!$id){
+            if($barcode_type==0){
+                $model->setBarcodeTemplateName($template_name)->setHtml($template)->setProductnameShow($productname_show)->setSkuShow($sku_show)->setPriceShow($price_show)
+                    ->setBarcodePerRow($barcode_per_row)->setPageHeight($page_height)->setBarcodeUnit($barcode_unit)->setVelticalDistantce($veltical_distantce)->setHorizontalDistance($horizontal_distance)
+                    ->setPageWidth($pageWidth)->setTopMargin($top_margin)->setLeftMargin($left_margin)->setRightMargin($right_margin)->setBottomMargin($bottom_margin)
+                    ->setBarcodeType($barcode_type)->setBarcodeWidth($barcode_width)->setBarcodeHeight($barcode_height)->setFontSize($font_size)->save();
+            }  else {
+                $model->setBarcodeTemplateName($template_name)->setHtml($template5)->setProductnameShow($productname_show)->setSkuShow($sku_show)->setPriceShow($price_show)
+                    ->setBarcodePerRow($barcode_per_row)->setPageHeight($page_height)->setBarcodeUnit($barcode_unit)->setVelticalDistantce($veltical_distantce)->setHorizontalDistance($horizontal_distance)
+                    ->setPageWidth($pageWidth)->setTopMargin($top_margin)->setLeftMargin($left_margin)->setRightMargin($right_margin)->setBottomMargin($bottom_margin)
+                    ->setBarcodeType($barcode_type)->setBarcodeWidth($barcode_width)->setBarcodeHeight($barcode_height)->setFontSize($font_size)->save();
+            }
         }
+        
         Mage::getSingleton('adminhtml/session')->addSuccess(
                 Mage::helper('inventorybarcode')->__('barcode template was successfully saved'));
 
@@ -382,8 +410,43 @@ class Magestore_Inventorybarcode_Adminhtml_Inb_PrintbarcodeController extends Ma
         $this->renderLayout();
         return;
     }
-    
-
+    public function printViewAction() {
+        $barPerRow = $this->getRequest()->getParam('barPerRow');
+        $barUnit = $this->getRequest()->getParam('barUnit');
+        $pageHeight = $this->getRequest()->getParam('pageHeight');
+        $velticalDistantce = $this->getRequest()->getParam('velticalDistantce');
+        $horizontalDistance = $this->getRequest()->getParam('horizontalDistance');
+        $attributeShow = $this->getRequest()->getParam('attributeShow');
+        $pageWidth = $this->getRequest()->getParam('pageWidth');
+        $topMargin = $this->getRequest()->getParam('topMargin');
+        $leftMargin = $this->getRequest()->getParam('leftMargin');
+        $rightMargin = $this->getRequest()->getParam('rightMargin');
+        $bottomMargin = $this->getRequest()->getParam('bottomMargin');
+        $barType = $this->getRequest()->getParam('barType');
+        $barcodeWidth = $this->getRequest()->getParam('barcodeWidth');
+        $barcodeHeight = $this->getRequest()->getParam('barcodeHeight');
+        $fontSize = $this->getRequest()->getParam('fontSize');
+        $attribute_Show = explode(',', $attributeShow);
+        
+        $contents = $this->getLayout()->createBlock('inventorybarcode/adminhtml_printbarcode')
+                ->setTemplate('inventorybarcode/printbarcode/printview.phtml')
+                ->assign('barPerRow', $barPerRow)
+                ->assign('barUnit', $barUnit)
+                ->assign('pageHeight',$pageHeight)
+                ->assign('velticalDistantce', $velticalDistantce)
+                ->assign('horizontalDistance', $horizontalDistance)
+                ->assign('attributeShow',$attribute_Show)
+                ->assign('pageWidth', $pageWidth)
+                ->assign('topMargin', $topMargin)
+                ->assign('leftMargin',$leftMargin)
+                ->assign('rightMargin',$rightMargin)
+                ->assign('bottomMargin', $bottomMargin)
+                ->assign('barType', $barType)
+                ->assign('barcodeWidth',$barcodeWidth)
+                ->assign('barcodeHeight', $barcodeHeight)
+                ->assign('fontSize', $fontSize);
+        echo $contents->toHtml();
+    }
 
     
 }

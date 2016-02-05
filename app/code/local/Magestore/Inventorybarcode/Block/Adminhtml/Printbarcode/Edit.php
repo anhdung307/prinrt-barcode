@@ -20,6 +20,11 @@ class Magestore_Inventorybarcode_Block_Adminhtml_Printbarcode_Edit extends Mage_
             $this->removeButton('saveandcontinue');
             $this->removeButton('cancel');
         }
+        $this->_addButton('print_view', array(
+                    'label' => Mage::helper('inventorybarcode')->__('Print View'),
+                    'onclick' => 'printView()',
+                    'class' => 'add',
+                        ), 0);
 
         $this->_formScripts[] = "
             function toggleEditor() {
@@ -28,6 +33,61 @@ class Magestore_Inventorybarcode_Block_Adminhtml_Printbarcode_Edit extends Mage_
                 else
                     tinyMCE.execCommand('mceRemoveControl', false, 'inventory_content');
             }
+            
+            function printView(){
+                var barPerRow=$('barcode_per_row').value;
+                var barUnit=$('barcode_unit').value;
+                var pageHeight=$('page_height').value;
+                var velticalDistantce=$('veltical_distantce').value;
+                var horizontalDistance=$('horizontal_distance').value;
+                var pageWidth=$('page_width').value;
+                var barType=$('barcode_type').value;
+                var topMargin=$('top_margin').value;
+                var leftMargin=$('left_margin').value;
+                var rightMargin=$('right_margin').value;
+                var bottomMargin=$('bottom_margin').value;
+                var barcodeWidth=$('barcode_width').value;
+                var barcodeHeight=$('barcode_height').value;
+                var fontSize=$('font_size').value;
+                var select1 = $('attribute_show');
+                        var wSelected = '';
+                        var j = 0;
+                        for (var i = 0; i < select1.length; i++) {
+                            if (select1.options[i].selected){
+                                if(j!=0) wSelected += ',';
+                                wSelected += select1.options[i].value;
+                                j++;
+                            }
+                        }
+                var attributeShow = wSelected;
+                if(!barPerRow){
+                    alert('Please import labels per row to print view!');
+                    return false;
+                }
+                if(!pageWidth){
+                    alert('Please import page width to print view!');
+                    return false;
+                }
+                if(!pageHeight){
+                    alert('Please import page heigth to print view!');
+                    return false;
+                }
+                if(!barcodeWidth){
+                    alert('Please import barcode width to print view!');
+                    return false;
+                }
+                if(!barcodeHeight){
+                    alert('Please import barcode height to print view!');
+                    return false;
+                }
+                if(!fontSize){
+                    alert('Please import font size to print view!');
+                    return false;
+                }
+                var url = '" . $this->getUrl('adminhtml/inb_printbarcode/printView') . "';
+                var url = url+'barPerRow/'+barPerRow+'/barUnit/'+barUnit+'/pageHeight/'+pageHeight+'/velticalDistantce/'+velticalDistantce+'/horizontalDistance/'+horizontalDistance+'/pageWidth/'+pageWidth+'/barType/'+barType+'/topMargin/'+topMargin+'/leftMargin/'+leftMargin+'/rightMargin/'+rightMargin+'/bottomMargin/'+bottomMargin+'/attributeShow/'+attributeShow+'/barcodeWidth/'+barcodeWidth+'/barcodeHeight/'+barcodeHeight+'/fontSize/'+fontSize;
+                window.open(url ,'_blank', 'scrollbars=yes, resizable=yes, width=750, height=500, left=80, menubar=yes');                
+            } 
 
         ";
     }
