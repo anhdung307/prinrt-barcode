@@ -382,7 +382,7 @@ class Magestore_Inventorybarcode_Adminhtml_Inb_PrintbarcodeController extends Ma
         $this->renderLayout();
         return;
     }
-    
+    //alan test
 
 
     
